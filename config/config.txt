@@ -232,7 +232,7 @@ USEBLACKLIST
 # SERVER ss13.example.com:2506
 
 ## Discod address
-DISCORDURL https://discord.gg/bx9c7ha5Qk
+DISCORDURL https://discord.gg/CHkEj3dq8z
 
 ## Wiki address
 WIKIURL https://wiki.moviesfreepremium.xyz/blackstone
