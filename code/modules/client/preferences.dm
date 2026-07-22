@@ -1024,12 +1024,6 @@ GLOBAL_LIST_EMPTY(chosen_names)
 				var/available_in_days = job.available_in_days(user.client)
 				HTML += "[used_name]</td> <td><font color=red> \[IN [(available_in_days)] DAYS\]</font></td></tr>"
 				continue
-			if(!job.required && !isnull(job.min_pq) && (get_playerquality(user.ckey) < job.min_pq))
-				HTML += "<font color=#a59461>[used_name] (Min PQ: [job.min_pq])</font></td> <td> </td></tr>"
-				continue
-			if(!job.required && !isnull(job.max_pq) && (get_playerquality(user.ckey) > job.max_pq))
-				HTML += "<font color=#a59461>[used_name] (Max PQ: [job.max_pq])</font></td> <td> </td></tr>"
-				continue
 			var/job_unavailable = JOB_AVAILABLE
 			if(isnewplayer(parent?.mob))
 				var/mob/dead/new_player/new_player = parent.mob
@@ -1196,15 +1190,6 @@ Slots: [job.spawn_positions]</span>
 		if(1)
 			jpval = JP_HIGH
 
-	if(job.required && !isnull(job.min_pq) && (get_playerquality(user.ckey) < job.min_pq))
-		if(job_preferences[job.title] == JP_LOW)
-			jpval = null
-		else
-			var/used_name = "[job.title]"
-			if(gender == FEMALE && job.f_title)
-				used_name = "[job.f_title]"
-			to_chat(user, "<font color='red'>You have too low PQ for [used_name] (Min PQ: [job.min_pq]), you may only set it to low.</font>")
-			jpval = JP_LOW
 
 	SetJobPreferenceLevel(job, jpval)
 	SetChoices(user)
