@@ -101,6 +101,8 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 				next_gmove = world.time + 30
 				return*/
 			if(O.density && !O.climbable)
+				if(istype(O, /obj/structure/mineral_door))
+					continue // the dead drift through doors, locked or not
 				if(!misting)
 					return
 		for(var/obj/item/reagent_containers/powder/flour/salt/S in T)
