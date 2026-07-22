@@ -299,12 +299,12 @@ GLOBAL_LIST_EMPTY(temporary_donators)
 	if(!email)
 		return
 	if(!patreon_lookup(name) || !patreon_lookup(email) || !findtext(email, "@"))
-		to_chat(src, span_warning("We couldn't find that name/email combo.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)"))
+		to_chat(src, span_warning("We couldn't find that name/email combo.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/CHkEj3dq8z)"))
 		return
 //	var/saniemail = sanitize_simple(email,list("@"="AT","."="DOT"))
 	var/fug = patemail2ckey(email)
 	if(fug && (fug != ckey))
-		to_chat(src, span_warning("That Patreon is already registered to a different player.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/9uYTPsRMKa)"))
+		to_chat(src, span_warning("That Patreon is already registered to a different player.</span> <span class='info'>Donator status is updated weekly before every playtest. If you have waited a week, seek help in our DISCORD SERVER (https://discord.gg/CHkEj3dq8z)"))
 		return
 	add_patreon(ckey,email)
 	client.patreonlevel = -1

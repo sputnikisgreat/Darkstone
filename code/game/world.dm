@@ -304,24 +304,13 @@ GLOBAL_VAR(restart_counter)
 
 /world/proc/update_status()
 	var/s = ""
-	s += "<center><a href=\"https://discord.gg/bx9c7ha5Qk\">"
-#ifdef MATURESERVER
-	s += "<big><b>BLACKSTONE</b></big></a><br>"
-	s += "<b>Fantasy Computer Roleplaying Game</b></center><br>"
-#else
-	s += "<big><b>BLACKSTONE</b></big></a><br>"
-	s += "<b>Fantasy Computer Survival Game</b></center><br>"
-#endif
-//	s += "<img src=\"https://i.imgur.com/shj547T.jpg\"></a></center>"
-
-//	s += "! <b>UPDATE 4.4</b> 4/22/2022<br><br>"
-#ifdef MATURESERVER
-	s += "\["
+	s += "<center><big><b>DARKSTONE RP</b></big><br>"
+	s += "<b>LRP/MRP medieval fantasy &#183; SFW, no ERP &#183; inspired by Blackstone & Ratwood</b><br>"
+	s += "<a href=\"https://discord.gg/CHkEj3dq8z\">Discord</a></center><br>"
 	if(SSticker.current_state <= GAME_STATE_PREGAME)
 		s += "<b>GAME STATUS:</b> IN LOBBY"
 	else
 		s += "<b>GAME STATUS:</b> PLAYING"
-#endif
 	status = s
 	return s
 /*
