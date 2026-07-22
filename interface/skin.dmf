@@ -189,6 +189,7 @@ window "preferencess_window"
 		anchor2 = -1,-1
 		is-visible = false
 		statusbar = false
+		background-color = #000000
 		can-close = false
 		can-resize = true
 		icon = 'icons\\tg_32.png'
