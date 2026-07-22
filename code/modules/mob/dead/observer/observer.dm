@@ -241,6 +241,8 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	. = ..()
 	if(!(istype(src, /mob/dead/observer/rogue/arcaneeye)))
 		client?.verbs += GLOB.ghost_verbs
+	if(istype(src, /mob/dead/observer/rogue) && !istype(src, /mob/dead/observer/rogue/arcaneeye))
+		apply_pop_ghost_vision()
 
 /mob/dead/observer/get_photo_description(obj/item/camera/camera)
 	if(!invisibility || camera.see_ghosts)
@@ -639,13 +641,12 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set category = "Ghost"
 	set name = "Orbit" // "Haunt"
 	set desc = ""
-	set hidden = 1
 	var/list/mobs
-	if(client.holder)
-		if(check_rights(R_WATCH, FALSE))
-			mobs = getpois(mobs_only=1,skip_mindless=1)
-		else
-			mobs = gethaunt()
+	if(client.holder && check_rights(R_WATCH, FALSE))
+		mobs = getpois(mobs_only=1,skip_mindless=1)
+	else if(!ghosts_can_respawn())
+		// High-pop: the dead may watch anyone freely, like CM.
+		mobs = getpois(mobs_only=1,skip_mindless=1)
 	else
 		mobs = gethaunt()
 
@@ -766,8 +767,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set category = "Ghost"
 	set name = "Jump to Mob"
 	set desc = ""
-	set hidden = 1
-	if(!check_rights(R_WATCH))
+	if(!check_rights(R_WATCH, FALSE) && ghosts_can_respawn())
+		to_chat(src, span_warning("I may only roam freely when the realm is crowded (more than 20 players)."))
 		return
 	if(isobserver(usr)) //Make sure they're an observer!
 
@@ -852,7 +853,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/toggle_darkness()
 	set name = "Toggle Darkness"
 	set category = "Ghost"
-	set hidden = 1
 	switch(lighting_alpha)
 		if (LIGHTING_PLANE_ALPHA_VISIBLE)
 			lighting_alpha = LIGHTING_PLANE_ALPHA_MOSTLY_VISIBLE
@@ -1240,3 +1240,42 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			client.images += t_ray_images
 		else
 			client.images -= stored_t_ray_images
+
+
+// -- Population-scaled death rules --
+// At or below this many connected players, the dead may freely respawn into the lobby.
+// Above it, respawning closes but ghosts get CM-style fullbright free observation instead.
+#define GHOST_RESPAWN_POP_CAP 20
+
+/proc/ghosts_can_respawn()
+	return length(GLOB.clients) <= GHOST_RESPAWN_POP_CAP
+
+/mob/dead/observer/verb/respawn_lowpop()
+	set category = "Ghost"
+	set name = "Respawn"
+	set desc = "Return to the lobby and join as a new character. (low population only)"
+	if(stat != DEAD || !SSticker)
+		to_chat(src, span_boldnotice("I must be dead to use this!"))
+		return
+	if(!ghosts_can_respawn())
+		to_chat(src, span_warning("The realm is too crowded for a second life (more than [GHOST_RESPAWN_POP_CAP] players online). I may freely watch the living instead."))
+		return
+	// Reopen our old job slot / set the same-job respawn delay, mirroring the underworld path.
+	if(mind?.assigned_role)
+		var/datum/job/target_job = SSjob.GetJob(mind.assigned_role)
+		if(target_job)
+			if(target_job.job_reopens_slots_on_death)
+				target_job.current_positions = max(0, target_job.current_positions - 1)
+			if(target_job.same_job_respawn_delay)
+				GLOB.job_respawn_delays[ckey] = world.time + target_job.same_job_respawn_delay
+	returntolobby()
+
+// CM-style observation when the server is busy: no darkness, watch anyone.
+/mob/dead/observer/proc/apply_pop_ghost_vision()
+	if(ghosts_can_respawn())
+		to_chat(src, span_notice("The realm is quiet: I may <b>Respawn</b> from the Ghost tab and live again."))
+		return
+	lighting_alpha = LIGHTING_PLANE_ALPHA_INVISIBLE
+	see_in_dark = 8
+	update_sight()
+	to_chat(src, span_notice("The veil thins: I see the realm unclouded by darkness, and may Orbit or Jump to anyone freely."))
