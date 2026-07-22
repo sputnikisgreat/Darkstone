@@ -184,27 +184,27 @@ window "preferencess_window"
 	elem "preferencess_window"
 		type = MAIN
 		pos = 372,150
-		size = 700x530
+		size = 875x530
 		anchor1 = -1,-1
 		anchor2 = -1,-1
 		is-visible = false
 		statusbar = false
 		can-close = false
-		can-resize = false
+		can-resize = true
 		icon = 'icons\\tg_32.png'
 	elem "preferences_browser"
 		type = BROWSER
 		pos = 0,0
-		size = 700x530
+		size = 656x530
 		anchor1 = 0,0
 		anchor2 = 75,100
 		saved-params = ""
 	elem "character_preview_map"
 		type = MAP
-		pos = 260,200
+		pos = 695,169
 		size = 140x192
-		anchor1 = 75,0
-		anchor2 = 100,100
+		anchor1 = 75,50
+		anchor2 = 75,50
 		background-color = #000000
 		right-click = true
 		icon-size = 64
