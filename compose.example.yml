@@ -1,0 +1,19 @@
+services:
+  darkstone:
+    build:
+      context: .
+      dockerfile: Dockerfile.blackstone
+    image: darkstone
+    container_name: darkstone
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "1337:1337/tcp"
+    volumes:
+      - ./config:/blackstone/config
+      - ./data:/blackstone/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"

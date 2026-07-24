@@ -1,0 +1,60 @@
+# Blackstone (SS13 / Roguetown fork) server image
+# BYOND is a 32-bit i386 application; everything here is i386.
+
+ARG BYOND_MAJOR=515
+ARG BYOND_MINOR=1633
+
+# ---------------------------------------------------------------- BYOND fetch
+FROM debian:bookworm-slim AS byond
+ARG BYOND_MAJOR
+ARG BYOND_MINOR
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates curl unzip \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /tmp
+RUN curl -fsSL -o byond.zip \
+      "https://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" \
+    && unzip -q byond.zip \
+    && chmod +x byond/bin/*
+
+# ------------------------------------------------------------------ base runtime
+FROM debian:bookworm-slim AS base
+RUN dpkg --add-architecture i386 \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        libc6:i386 \
+        libstdc++6:i386 \
+        zlib1g:i386 \
+        libssl3:i386 \
+        libgcc-s1:i386 \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=byond /tmp/byond /opt/byond
+ENV BYOND_SYSTEM=/opt/byond \
+    LD_LIBRARY_PATH=/opt/byond/bin \
+    PATH=/opt/byond/bin:$PATH
+
+# ------------------------------------------------------------------ compile
+FROM base AS build
+WORKDIR /src
+COPY . .
+# DreamMaker returns 1 on warnings, so gate on the .dmb actually existing.
+RUN DreamMaker -max_errors 0 roguetown.dme; \
+    test -f roguetown.dmb || { echo "BUILD FAILED: no .dmb produced"; exit 1; }
+
+# ------------------------------------------------------------------ final
+FROM base
+WORKDIR /blackstone
+
+COPY --from=build /src /blackstone
+
+# rust_g is dlopen'd from the working dir; BYOND also probes ~/.byond/bin.
+RUN mkdir -p /root/.byond/bin \
+    && ln -sf /blackstone/librust_g.so /root/.byond/bin/rust_g \
+    && ln -sf /blackstone/librust_g.so /root/.byond/bin/librust_g.so
+
+# config/ and data/ are bind-mounted over at runtime.
+VOLUME ["/blackstone/config", "/blackstone/data"]
+
+EXPOSE 1337
+ENTRYPOINT ["DreamDaemon", "roguetown.dmb", "-port", "1337", "-trusted", "-close", "-verbose"]
