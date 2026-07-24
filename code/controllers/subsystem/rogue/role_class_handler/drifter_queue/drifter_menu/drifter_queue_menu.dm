@@ -14,10 +14,11 @@
 		return
 	//Opening tags and empty head
 	var/data = {"
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<!DOCTYPE html>
 	<html>
 		<head>
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 			<style>
 			</style>
 			<link rel='stylesheet' type='text/css' href='slop_menustyle4.css'>
