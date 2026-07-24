@@ -1,4 +1,6 @@
 
+#define PRIEST_ANNOUNCEMENT_COOLDOWN (2 MINUTES)
+
 /datum/job/roguetown/priest
 	title = "Priest"
 	flag = PRIEST
@@ -149,12 +151,27 @@
 	set category = "Priest"
 	if(stat)
 		return
+	if(!istype(get_area(src), /area/rogue/indoors/town/church/chapel))
+		to_chat(src, span_warning("I need to do this from the chapel."))
+		return FALSE
 	var/inputty = input("Make an announcement", "ROGUETOWN") as text|null
 	if(inputty)
+		if(!can_speak_vocal())
+			to_chat(src, span_warning("I can't speak!"))
+			return FALSE
+		if(!COOLDOWN_FINISHED(src, priest_announcement))
+			to_chat(src, span_warning("I must gather my thoughts before speaking again."))
+			return FALSE
+		visible_message(span_warning("[src] takes a deep breath, preparing to make an announcement..."))
+		if(!do_after(src, 15 SECONDS, target = src))
+			to_chat(src, span_warning("My announcement was interrupted!"))
+			return FALSE
 		if(!istype(get_area(src), /area/rogue/indoors/town/church/chapel))
 			to_chat(src, span_warning("I need to do this from the chapel."))
 			return FALSE
+		say(inputty)
 		priority_announce("[inputty]", title = "The Priest Speaks", sound = 'sound/misc/bell.ogg')
+		COOLDOWN_START(src, priest_announcement, PRIEST_ANNOUNCEMENT_COOLDOWN)
 
 /obj/effect/proc_holder/spell/self/convertrole/templar
 	name = "Recruit Templar"

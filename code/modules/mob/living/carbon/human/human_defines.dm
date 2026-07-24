@@ -121,3 +121,5 @@
 	/datum/rmb_intent/weak)
 
 	rot_type = /datum/component/rot/corpse
+	COOLDOWN_DECLARE(priest_announcement)
+	COOLDOWN_DECLARE(lord_announcement)

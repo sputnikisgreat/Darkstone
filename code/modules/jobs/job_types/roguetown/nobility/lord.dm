@@ -1,3 +1,5 @@
+#define LORD_ANNOUNCEMENT_COOLDOWN (2 MINUTES)
+
 GLOBAL_VAR(lordsurname)
 GLOBAL_LIST_EMPTY(lord_titles)
 
@@ -44,6 +46,7 @@ GLOBAL_LIST_EMPTY(lord_titles)
 /datum/job/roguetown/lord/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
 	..()
 	if(L)
+		L.verbs |= /mob/living/carbon/human/proc/lordannouncement
 		var/list/chopped_name = splittext(L.real_name, " ")
 		if(length(chopped_name) > 1)
 			chopped_name -= chopped_name[1]
@@ -199,3 +202,31 @@ GLOBAL_LIST_EMPTY(lord_titles)
 	recruiter.say("I HEREBY GRANT YOU, [uppertext(recruit.name)], THE TITLE OF [uppertext(granted_title)]!")
 	GLOB.lord_titles[recruit.real_name] = granted_title
 	return TRUE
+
+/mob/living/carbon/human/proc/lordannouncement()
+	set name = "Announcement"
+	set category = "King"
+	if(stat)
+		return
+	if(!istype(buckled, /obj/structure/roguethrone))
+		to_chat(src, span_warning("I must speak from my throne."))
+		return FALSE
+	var/inputty = input("Make an announcement", "ROGUETOWN") as text|null
+	if(inputty)
+		if(!can_speak_vocal())
+			to_chat(src, span_warning("I can't speak!"))
+			return FALSE
+		if(!COOLDOWN_FINISHED(src, lord_announcement))
+			to_chat(src, span_warning("I must gather my thoughts before speaking again."))
+			return FALSE
+		visible_message(span_warning("[src] rises to address the realm..."))
+		if(!do_after(src, 15 SECONDS, target = src))
+			to_chat(src, span_warning("My announcement was interrupted!"))
+			return FALSE
+		if(!istype(buckled, /obj/structure/roguethrone))
+			to_chat(src, span_warning("I must speak from my throne."))
+			return FALSE
+		say(inputty)
+		var/used_title = (gender == FEMALE) ? "Queen" : "King"
+		priority_announce("[inputty]", title = "The [used_title] Speaks", sound = pick('sound/misc/royal_decree.ogg', 'sound/misc/royal_decree2.ogg'))
+		COOLDOWN_START(src, lord_announcement, LORD_ANNOUNCEMENT_COOLDOWN)
