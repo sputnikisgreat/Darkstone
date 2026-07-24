@@ -92,10 +92,12 @@
 //	if(force)
 //		user.emote("attackgrunt")
 	var/datum/intent/cached_intent = user.used_intent
-	if(user.used_intent.swingdelay)
-		if(!user.used_intent.noaa)
-			user.do_attack_animation(M, visual_effect_icon = user.used_intent.animname)
+	if(!user.used_intent.noaa)
+		user.do_attack_animation(M, visual_effect_icon = user.used_intent.animname)
+		user.do_weapon_swing(M, src)
+		if(user.used_intent.swingdelay)
 			user.draw_swingdelay(M, user.used_intent.animname, user.used_intent.swingdelay)
+	if(user.used_intent.swingdelay)
 		sleep(user.used_intent.swingdelay)
 	if(user.a_intent != cached_intent)
 		return
@@ -109,8 +111,6 @@
 		return
 	if((M.mobility_flags & MOBILITY_STAND))
 		if(M.checkmiss(user))
-			if(!user.used_intent.swingdelay)
-				user.do_attack_animation(M, visual_effect_icon = user.used_intent.animname)
 			return
 	if(istype(user.rmb_intent, /datum/rmb_intent/strong))
 		user.rogfat_add(10)
@@ -132,9 +132,6 @@
 							playsound(M.loc,  "nodmg", 100, FALSE, -1)
 				log_combat(user, M, "attacked", src.name, "(INTENT: [uppertext(user.used_intent.name)]) (DAMTYPE: [uppertext(damtype)])")
 				add_fingerprint(user)
-		if(M.d_intent == INTENT_DODGE)
-			if(!user.used_intent.swingdelay)
-				user.do_attack_animation(M, visual_effect_icon = user.used_intent.animname)
 		return
 
 	if(user.zone_selected == BODY_ZONE_PRECISE_R_INHAND)

@@ -775,6 +775,38 @@
 	animate(A, pixel_x = A.pixel_x + pixel_x_diff, pixel_y = A.pixel_y + pixel_y_diff, time = 2)
 	animate(A, pixel_x = A.pixel_x - pixel_x_diff, pixel_y = A.pixel_y - pixel_y_diff, time = 2)
 
+/atom/movable/proc/do_weapon_swing(atom/A, obj/item/used_item)
+	if(!used_item || used_item.no_effect)
+		return
+	if(A == src)
+		return
+	var/swingdir = get_dir(src, A)
+	if(!swingdir)
+		return
+	var/px = 0
+	var/py = 0
+	if(swingdir & NORTH)
+		py = 18
+	else if(swingdir & SOUTH)
+		py = -18
+	if(swingdir & EAST)
+		px = 18
+	else if(swingdir & WEST)
+		px = -18
+	var/angle = dir2angle(swingdir)
+	var/image/swing = image(used_item.icon, src, used_item.icon_state, ABOVE_MOB_LAYER)
+	swing.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	swing.pixel_x = round(px * 0.3)
+	swing.pixel_y = round(py * 0.3)
+	var/matrix/windup = matrix()
+	windup.Turn(angle - 50)
+	swing.transform = windup
+	var/matrix/followthrough = matrix()
+	followthrough.Turn(angle + 50)
+	flick_overlay_view(swing, src, 5)
+	animate(swing, transform = followthrough, pixel_x = px, pixel_y = py, time = 3)
+	animate(alpha = 0, time = 2)
+
 /atom/movable/proc/draw_swingdelay(atom/A, visual_effect_icon, delay)
 	if(!visual_effect_icon || !delay)
 		return
