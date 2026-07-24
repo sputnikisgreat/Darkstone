@@ -185,6 +185,10 @@
 	if(isSwitchingStates)
 		return
 	if(locked)
+		var/obj/item/worn_key = find_worn_key(user)
+		if(worn_key)
+			trykeylock(worn_key, user)
+			return
 		if(isliving(user))
 			var/mob/living/L = user
 			if(L.m_intent == MOVE_INTENT_SNEAK)
@@ -279,6 +283,29 @@
 	else
 		return ..()
 
+
+/obj/structure/mineral_door/proc/find_worn_key(mob/user)
+	if(!keylock || !ishuman(user))
+		return null
+	var/mob/living/carbon/human/H = user
+	for(var/slot in list(SLOT_BELT, SLOT_BELT_L, SLOT_BELT_R))
+		var/obj/item/I = H.get_item_by_slot(slot)
+		if(!I)
+			continue
+		if(istype(I, /obj/item/keyring))
+			var/obj/item/keyring/R = I
+			for(var/obj/item/roguekey/K in R.keys)
+				if(K.lockhash == lockhash)
+					return I
+			continue
+		if(istype(I, /obj/item/roguekey))
+			var/obj/item/roguekey/K = I
+			if(K.lockhash == lockhash)
+				return I
+			continue
+		for(var/obj/item/roguekey/K in I.contents)
+			if(K.lockhash == lockhash)
+				return K
 
 /obj/structure/mineral_door/proc/trykeylock(obj/item/I, mob/user)
 	if(door_opened || isSwitchingStates)
