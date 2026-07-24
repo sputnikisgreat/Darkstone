@@ -9,7 +9,7 @@ SUBSYSTEM_DEF(skills)
 	///Dictionary of skill.type || skill ref
 	var/list/all_skills = list()
 	///Static assoc list of levels (ints) - strings
-	var/static/list/level_names = list(
+	var/static/list/level_names = alist(
 		SKILL_LEVEL_NOVICE = span_info("<span class='small'>Novice</span>"), 
 		SKILL_LEVEL_APPRENTICE = span_info("Apprentice"), 
 		SKILL_LEVEL_JOURNEYMAN = span_biginfo("Journeyman"), 

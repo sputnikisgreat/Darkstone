@@ -1,8 +1,8 @@
 # Blackstone (SS13 / Roguetown fork) server image
 # BYOND is a 32-bit i386 application; everything here is i386.
 
-ARG BYOND_MAJOR=515
-ARG BYOND_MINOR=1633
+ARG BYOND_MAJOR=516
+ARG BYOND_MINOR=1673
 
 # ---------------------------------------------------------------- BYOND fetch
 FROM debian:bookworm-slim AS byond
@@ -25,6 +25,7 @@ RUN dpkg --add-architecture i386 \
         libstdc++6:i386 \
         zlib1g:i386 \
         libssl3:i386 \
+        libcurl4:i386 \
         libgcc-s1:i386 \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
