@@ -174,6 +174,8 @@
 				if(ismob(pulling))
 					user.pulling.forceMove(target)
 				user.forceMove(target)
+				if(istype(user.loc, /turf/open/transparent/openspace))
+					wallshove(L)
 				user.start_pulling(pulling,supress_message = TRUE)
 				if(user.m_intent != MOVE_INTENT_SNEAK)
 					playsound(user, 'sound/foley/climb.ogg', 100, TRUE)
