@@ -1929,7 +1929,6 @@
 	name = "Me."
 	icon_state = ""
 
-// Click the lobby character sprite to toggle an enlarged preview.
 /atom/movable/screen/char_preview/Click()
 	var/client/C = usr?.client
 	if(!C)

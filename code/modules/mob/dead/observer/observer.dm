@@ -647,7 +647,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(client.holder && check_rights(R_WATCH, FALSE))
 		mobs = getpois(mobs_only=1,skip_mindless=1)
 	else if(!ghosts_can_respawn())
-		// High-pop: the dead may watch anyone freely, like CM.
 		mobs = getpois(mobs_only=1,skip_mindless=1)
 	else
 		mobs = gethaunt()
@@ -1244,9 +1243,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			client.images -= stored_t_ray_images
 
 
-// -- Population-scaled death rules --
 // At or below this many connected players, the dead may freely respawn into the lobby.
-// Above it, respawning closes but ghosts get CM-style fullbright free observation instead.
+// Above it, respawning closes and ghosts get fullbright free observation instead.
 #define GHOST_RESPAWN_POP_CAP 20
 
 /proc/ghosts_can_respawn()
@@ -1262,7 +1260,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!ghosts_can_respawn())
 		to_chat(src, span_warning("The realm is too crowded for a second life (more than [GHOST_RESPAWN_POP_CAP] players online). I may freely watch the living instead."))
 		return
-	// Reopen our old job slot / set the same-job respawn delay, mirroring the underworld path.
+	// keep in sync with the slot handling in descend()
 	if(mind?.assigned_role)
 		var/datum/job/target_job = SSjob.GetJob(mind.assigned_role)
 		if(target_job)
@@ -1272,7 +1270,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 				GLOB.job_respawn_delays[ckey] = world.time + target_job.same_job_respawn_delay
 	returntolobby()
 
-// CM-style observation when the server is busy: no darkness, watch anyone.
 /mob/dead/observer/proc/apply_pop_ghost_vision()
 	if(ghosts_can_respawn())
 		to_chat(src, span_notice("The realm is quiet: I may <b>Respawn</b> from the Ghost tab and live again."))
