@@ -775,6 +775,21 @@
 	animate(A, pixel_x = A.pixel_x + pixel_x_diff, pixel_y = A.pixel_y + pixel_y_diff, time = 2)
 	animate(A, pixel_x = A.pixel_x - pixel_x_diff, pixel_y = A.pixel_y - pixel_y_diff, time = 2)
 
+/atom/movable/proc/draw_swingdelay(atom/A, visual_effect_icon, delay)
+	if(!visual_effect_icon || !delay)
+		return
+	var/turf/step_turf = get_step(src, get_dir(src, A))
+	if(!step_turf)
+		return
+	var/obj/effect/temp_visual/swingdelay/swing = new(step_turf, delay)
+	swing.icon_state = visual_effect_icon
+	for(var/i in 1 to get_dist(src, A) - 1)
+		step_turf = get_step(step_turf, get_dir(step_turf, A))
+		if(!step_turf)
+			return
+		var/obj/effect/temp_visual/swingdelay/trail = new(step_turf, delay)
+		trail.icon_state = visual_effect_icon
+
 /atom/movable/proc/do_item_attack_animation(atom/A, visual_effect_icon, obj/item/used_item)
 //	var/noanim = FALSE
 	if(used_item)

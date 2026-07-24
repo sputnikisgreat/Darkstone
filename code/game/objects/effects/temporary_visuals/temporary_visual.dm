@@ -37,3 +37,12 @@
 	. = ..()
 
 
+
+/obj/effect/temp_visual/swingdelay
+	randomdir = FALSE
+	icon = 'icons/effects/effects.dmi'
+
+/obj/effect/temp_visual/swingdelay/Initialize(mapload, set_duration)
+	if(isnum(set_duration))
+		duration = set_duration
+	. = ..()

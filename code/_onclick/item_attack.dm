@@ -95,6 +95,7 @@
 	if(user.used_intent.swingdelay)
 		if(!user.used_intent.noaa)
 			user.do_attack_animation(M, visual_effect_icon = user.used_intent.animname)
+			user.draw_swingdelay(M, user.used_intent.animname, user.used_intent.swingdelay)
 		sleep(user.used_intent.swingdelay)
 	if(user.a_intent != cached_intent)
 		return
