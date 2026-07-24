@@ -4,7 +4,7 @@ body {
 	background-repeat: no-repeat;
 	background-attachment: fixed; 
 	background-size: 100% 100%;
-
+	overflow-y: auto;
 }
 
 #top_handwriting {
@@ -20,6 +20,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
+	padding-bottom: 48px;
 }
 
 #green_plussa 
