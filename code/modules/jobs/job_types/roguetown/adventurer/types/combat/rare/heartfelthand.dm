@@ -8,7 +8,7 @@
 	maximum_possible_slots = 1
 	pickprob = 100
 	traits_applied = list(TRAIT_HEAVYARMOR, TRAIT_SEEPRICES)
-	category_tags = list(CTAG_ADVENTURER)
+	category_tags = list(CTAG_DISABLED)
 
 /datum/outfit/job/roguetown/adventurer/heartfelthand/pre_equip(mob/living/carbon/human/H)
 	..()
