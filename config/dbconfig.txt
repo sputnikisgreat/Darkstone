@@ -24,10 +24,10 @@ FEEDBACK_DATABASE rtwn
 FEEDBACK_TABLEPREFIX SS13_
 
 ## Username/Login used to access the database.
-FEEDBACK_LOGIN rtzone
+FEEDBACK_LOGIN changeme
 
 ## Password used to access the database.
-FEEDBACK_PASSWORD Wowamu5E
+FEEDBACK_PASSWORD changeme
 
 ## Time in seconds for asynchronous queries to timeout
 ## Set to 0 for infinite
