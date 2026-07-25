@@ -993,7 +993,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 		bottom += list(list("label" = "JOIN LATE", "style" = "ready", "href" = "src=\ref[N];late_join=1"))
 
 	var/list/status = list(
-		charui_row("PQ", get_playerquality(user.ckey, text = TRUE), "_src_=prefs;preference=playerquality;task=menu"),
+		charui_row("PQ", strip_html_simple(get_playerquality(user.ckey, text = TRUE)), "_src_=prefs;preference=playerquality;task=menu"),
 		charui_row("Triumphs", user.get_triumphs() ? "\Roman [user.get_triumphs()]" : "None", "_src_=prefs;preference=triumphs;task=menu"),
 	)
 	if(SStriumphs.triumph_buys_enabled)
@@ -1004,6 +1004,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 		"name" = real_name,
 		"dir" = preview_dir,
 		"rotate_href" = "_src_=prefs;preference=preview_dir",
+		"place_href" = "_src_=prefs;preference=preview_place",
 		"top" = top,
 		"bottom" = bottom,
 		"sections" = list(
@@ -2215,6 +2216,16 @@ Slots: [job.spawn_positions]</span>
 					var/newdir = text2num(href_list["newdir"])
 					if(newdir in GLOB.cardinals)
 						preview_dir = newdir
+
+				if("preview_place")
+					var/px = text2num(href_list["x"])
+					var/py = text2num(href_list["y"])
+					var/pw = text2num(href_list["w"])
+					var/ph = text2num(href_list["h"])
+					if(isnull(px) || isnull(py) || pw < 32 || ph < 32)
+						return
+					winset(user, "preferencess_window.character_preview_map", "pos=[px],[py];size=[pw]x[ph]")
+					return
 
 				if("domhand")
 					if(domhand == 1)

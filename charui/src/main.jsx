@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
 const act = (href) => {
@@ -38,6 +38,27 @@ function Panel({ section }) {
 
 function App({ state }) {
   const [dir, setDir] = useState(state.dir || 2);
+  const pedestal = useRef(null);
+
+  // The preview map is a real BYOND control layered over this page, so it can
+  // only line up if we hand DM the box we actually laid out.
+  useEffect(() => {
+    const place = () => {
+      const el = pedestal.current;
+      if (!el || !state.place_href) return;
+      const r = el.getBoundingClientRect();
+      act(
+        state.place_href +
+          ';x=' + Math.round(r.left) +
+          ';y=' + Math.round(r.top) +
+          ';w=' + Math.round(r.width) +
+          ';h=' + Math.round(r.height)
+      );
+    };
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
+  }, []);
 
   const rotate = (delta) => {
     // SOUTH 2, WEST 8, NORTH 1, EAST 4 is BYOND's ordering around the compass.
@@ -68,7 +89,7 @@ function App({ state }) {
         <div className="col">{left.map((s, i) => <Panel key={i} section={s} />)}</div>
 
         <div className="stage">
-          <div className="pedestal" />
+          <div className="pedestal" ref={pedestal} />
           <div className="rotate">
             <button className="arrow" onClick={() => rotate(-1)}>&#9664;</button>
             <button className="arrow" onClick={() => rotate(1)}>&#9654;</button>
