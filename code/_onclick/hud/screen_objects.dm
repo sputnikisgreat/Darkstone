@@ -1929,23 +1929,6 @@
 	name = "Me."
 	icon_state = ""
 
-/atom/movable/screen/char_preview/Click()
-	var/client/C = usr?.client
-	if(!C)
-		return
-	C.char_preview_expanded = !C.char_preview_expanded
-	var/raw = winget(C, "preferencess_window", "size")
-	var/sep = findtext(raw, "x")
-	var/W = sep ? text2num(copytext(raw, 1, sep)) : 0
-	var/H = sep ? text2num(copytext(raw, sep + 1)) : 0
-	if(!W || !H)
-		W = 875
-		H = 530
-	if(C.char_preview_expanded)
-		winset(C, "preferencess_window.character_preview_map", "size=280x384;pos=[max(0, W - 288)],[max(0, round((H - 384) / 2))];icon-size=128")
-	else
-		winset(C, "preferencess_window.character_preview_map", "size=140x192;pos=[max(0, round(W * 0.75) + 39)],[max(0, round((H - 192) / 2))];icon-size=64")
-
 #define READ_RIGHT 1
 #define READ_LEFT 2
 #define READ_BOTH 3

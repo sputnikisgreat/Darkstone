@@ -116,8 +116,6 @@
 
 	///Should only be a key-value list of north/south/east/west = atom/movable/screen.
 	var/list/char_render_holders
-	///Lobby character preview enlarged via clicking the sprite
-	var/char_preview_expanded = FALSE
 
 	///Amount of keydowns in the last keysend checking interval
 	var/client_keysend_amount = 0
