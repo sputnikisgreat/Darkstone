@@ -71,9 +71,16 @@ function App({ state }) {
           <div className="pedestal" />
           <div className="rotate">
             <button className="arrow" onClick={() => rotate(-1)}>&#9664;</button>
-            <span className="rotlabel">rotate</span>
             <button className="arrow" onClick={() => rotate(1)}>&#9654;</button>
           </div>
+
+          {state.status && (
+            <div className="status">
+              {state.status.map((f, i) => (
+                <Field key={i} field={f} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="col">{right.map((s, i) => <Panel key={i} section={s} />)}</div>

@@ -992,7 +992,15 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	else
 		bottom += list(list("label" = "JOIN LATE", "style" = "ready", "href" = "src=\ref[N];late_join=1"))
 
+	var/list/status = list(
+		charui_row("PQ", get_playerquality(user.ckey, text = TRUE), "_src_=prefs;preference=playerquality;task=menu"),
+		charui_row("Triumphs", user.get_triumphs() ? "\Roman [user.get_triumphs()]" : "None", "_src_=prefs;preference=triumphs;task=menu"),
+	)
+	if(SStriumphs.triumph_buys_enabled)
+		status += list(charui_row("Triumph Buy", "Open", "_src_=prefs;preference=triumph_buy_menu"))
+
 	var/list/state = list(
+		"status" = status,
 		"name" = real_name,
 		"dir" = preview_dir,
 		"rotate_href" = "_src_=prefs;preference=preview_dir",
@@ -2168,13 +2176,6 @@ Slots: [job.spawn_positions]</span>
 						UI_style = "Rogue"
 						if (parent && parent.mob && parent.mob.hud_used)
 							parent.mob.hud_used.update_ui_style(ui_style2icon(UI_style))
-				if("preview_dir")
-					var/newdir = text2num(href_list["newdir"])
-					if(newdir in GLOB.cardinals)
-						preview_dir = newdir
-						update_preview_icon()
-					return
-
 				if("pda_style")
 					var/pickedPDAStyle = input(user, "Choose your PDA style.", "Character Preference", pda_style)  as null|anything in GLOB.pda_styles
 					if(pickedPDAStyle)
@@ -2210,6 +2211,11 @@ Slots: [job.spawn_positions]</span>
 						random_character(gender)
 						accessory = "Nothing"
 						detail = "Nothing"
+				if("preview_dir")
+					var/newdir = text2num(href_list["newdir"])
+					if(newdir in GLOB.cardinals)
+						preview_dir = newdir
+
 				if("domhand")
 					if(domhand == 1)
 						domhand = 2

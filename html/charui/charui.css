@@ -205,3 +205,12 @@ html, body {
 ::-webkit-scrollbar-track { background: #0b0a0c; }
 ::-webkit-scrollbar-thumb { background: #2a1c20; }
 ::-webkit-scrollbar-thumb:hover { background: #45242a; }
+
+.status {
+  margin-top: 16px;
+  width: 100%;
+  padding: 0 4px;
+}
+.status .row { border-bottom: 1px solid #161418; }
+.status .label { color: #6a6266; font-size: 12px; }
+.status .value { font-size: 12px; }
