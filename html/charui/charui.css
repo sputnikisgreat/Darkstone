@@ -64,50 +64,10 @@ html, body {
   overflow-y: auto;
 }
 
-.stage {
-  flex: 0 0 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
-}
 
-/* Left clear on purpose: the BYOND preview map is positioned over this box. */
-.pedestal {
-  width: 160px;
-  height: 216px;
-  border: 1px solid #241216;
-  background:
-    radial-gradient(ellipse at 50% 94%, rgba(150,30,35,.13), transparent 60%),
-    #0b0a0c;
-}
 
-.rotate {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
-.arrow {
-  background: #131114;
-  border: 1px solid #35191c;
-  color: #8d7f83;
-  width: 36px;
-  height: 26px;
-  font-size: 13px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background .12s, color .12s, border-color .12s;
-}
-.arrow:hover { background: #2a1114; color: #ff6b6b; border-color: #8e2027; }
 
-.rotlabel {
-  font-size: 11px;
-  color: #6a5f63;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
 
 .panel { margin-bottom: 16px; }
 
@@ -206,11 +166,26 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #2a1c20; }
 ::-webkit-scrollbar-thumb:hover { background: #45242a; }
 
-.status {
-  margin-top: 16px;
-  width: 100%;
-  padding: 0 4px;
+
+.readouts { margin-left: auto; display: flex; gap: 8px; }
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid #2b1416;
+  padding: 0 0 0 10px;
+  cursor: pointer;
+  font-family: inherit;
 }
-.status .row { border-bottom: 1px solid #161418; }
-.status .label { color: #6a6266; font-size: 12px; }
-.status .value { font-size: 12px; }
+.readout:hover .rvalue { color: #ff8a8a; }
+.rlabel {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6a6266;
+}
+.rvalue { font-size: 14px; color: #ded6d9; white-space: nowrap; }

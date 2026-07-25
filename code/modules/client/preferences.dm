@@ -992,9 +992,30 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	else
 		bottom += list(list("label" = "JOIN LATE", "style" = "ready", "href" = "src=\ref[N];late_join=1"))
 
+	var/pq_num = get_playerquality(user.ckey)
+	var/pq_word = "Normal"
+	switch(pq_num)
+		if(100 to INFINITY)
+			pq_word = "Legendary"
+		if(70 to 99)
+			pq_word = "Exceptional"
+		if(30 to 69)
+			pq_word = "Great"
+		if(5 to 29)
+			pq_word = "Good"
+		if(-4 to 4)
+			pq_word = "Normal"
+		if(-30 to -5)
+			pq_word = "Poor"
+		if(-70 to -31)
+			pq_word = "Terrible"
+		else
+			pq_word = "Abysmal"
+	var/triumphs = SStriumphs.get_triumphs(user.ckey)
+
 	var/list/status = list(
-		charui_row("PQ", strip_html_simple(get_playerquality(user.ckey, text = TRUE)), "_src_=prefs;preference=playerquality;task=menu"),
-		charui_row("Triumphs", user.get_triumphs() ? "\Roman [user.get_triumphs()]" : "None", "_src_=prefs;preference=triumphs;task=menu"),
+		charui_row("PQ", "[pq_num] [pq_word]", "_src_=prefs;preference=playerquality;task=menu"),
+		charui_row("Triumphs", triumphs ? "[triumphs]" : "None", "_src_=prefs;preference=triumphs;task=menu"),
 	)
 	if(SStriumphs.triumph_buys_enabled)
 		status += list(charui_row("Triumph Buy", "Open", "_src_=prefs;preference=triumph_buy_menu"))
@@ -1004,7 +1025,6 @@ GLOBAL_LIST_EMPTY(chosen_names)
 		"name" = real_name,
 		"dir" = preview_dir,
 		"rotate_href" = "_src_=prefs;preference=preview_dir",
-		"place_href" = "_src_=prefs;preference=preview_place",
 		"top" = top,
 		"bottom" = bottom,
 		"sections" = list(

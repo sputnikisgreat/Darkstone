@@ -1043,13 +1043,28 @@ GLOBAL_LIST_EMPTY(external_rsc_urls)
 		to_chat(src, announcement)
 
 /client/proc/show_character_previews(mutable_appearance/MA)
-	clear_character_previews()
-	var/atom/movable/screen/char_preview/O = new
-	LAZYSET(char_render_holders, "preview", O)
-	screen += O
-	O.appearance = MA
-	O.dir = prefs ? prefs.preview_dir : SOUTH
-	O.screen_loc = "character_preview_map:1:24,1:38"
+	var/pos = 0
+	for(var/D in GLOB.cardinals)
+		pos++
+		var/atom/movable/screen/char_preview/O = LAZYACCESS(char_render_holders, "[D]")
+		if(O)
+			screen -= O
+			char_render_holders -= O
+			qdel(O)
+		O = new
+		LAZYSET(char_render_holders, "[D]", O)
+		screen += O
+		O.appearance = MA
+		O.dir = D
+		switch(pos)
+			if(1)
+				O.screen_loc = "character_preview_map:1:2,2:-18"
+			if(2)
+				O.screen_loc = "character_preview_map:0:2,2:-18"
+			if(3)
+				O.screen_loc = "character_preview_map:1:2,0:10"
+			if(4)
+				O.screen_loc = "character_preview_map:0:2,0:10"
 
 /client/proc/clear_character_previews()
 	for(var/atom/movable/screen/S in char_render_holders)

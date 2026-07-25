@@ -196,16 +196,16 @@ window "preferencess_window"
 	elem "preferences_browser"
 		type = BROWSER
 		pos = 0,0
-		size = 875x530
+		size = 715x530
 		anchor1 = 0,0
-		anchor2 = 100,100
+		anchor2 = 82,100
 		saved-params = ""
 	elem "character_preview_map"
 		type = MAP
-		pos = 358,108
-		size = 160x216
-		anchor1 = 50,0
-		anchor2 = 50,0
+		pos = 720,120
+		size = 150x260
+		anchor1 = 82,0
+		anchor2 = 100,100
 		background-color = #0b0a0c
 		right-click = true
 		icon-size = 64

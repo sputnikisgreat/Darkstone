@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 const act = (href) => {
@@ -6,7 +6,7 @@ const act = (href) => {
 };
 
 function Field({ field }) {
-  if (field.kind === 'text') {
+  if (!field.href) {
     return (
       <div className="row static">
         <span className="label">{field.label}</span>
@@ -37,38 +37,6 @@ function Panel({ section }) {
 }
 
 function App({ state }) {
-  const [dir, setDir] = useState(state.dir || 2);
-  const pedestal = useRef(null);
-
-  // The preview map is a real BYOND control layered over this page, so it can
-  // only line up if we hand DM the box we actually laid out.
-  useEffect(() => {
-    const place = () => {
-      const el = pedestal.current;
-      if (!el || !state.place_href) return;
-      const r = el.getBoundingClientRect();
-      act(
-        state.place_href +
-          ';x=' + Math.round(r.left) +
-          ';y=' + Math.round(r.top) +
-          ';w=' + Math.round(r.width) +
-          ';h=' + Math.round(r.height)
-      );
-    };
-    place();
-    window.addEventListener('resize', place);
-    return () => window.removeEventListener('resize', place);
-  }, []);
-
-  const rotate = (delta) => {
-    // SOUTH 2, WEST 8, NORTH 1, EAST 4 is BYOND's ordering around the compass.
-    const order = [2, 4, 1, 8];
-    const at = order.indexOf(dir);
-    const next = order[(at + delta + order.length) % order.length];
-    setDir(next);
-    act(state.rotate_href + ';newdir=' + next);
-  };
-
   const left = state.sections.filter((s) => s.side === 'left');
   const right = state.sections.filter((s) => s.side === 'right');
 
@@ -83,27 +51,23 @@ function App({ state }) {
             </button>
           ))}
         </div>
+        <div className="readouts">
+          {state.status.map((s, i) => (
+            <button
+              key={i}
+              className="readout"
+              onClick={() => act(s.href)}
+              title={s.label}
+            >
+              <span className="rlabel">{s.label}</span>
+              <span className="rvalue">{s.value}</span>
+            </button>
+          ))}
+        </div>
       </header>
 
       <main className="cols">
         <div className="col">{left.map((s, i) => <Panel key={i} section={s} />)}</div>
-
-        <div className="stage">
-          <div className="pedestal" ref={pedestal} />
-          <div className="rotate">
-            <button className="arrow" onClick={() => rotate(-1)}>&#9664;</button>
-            <button className="arrow" onClick={() => rotate(1)}>&#9654;</button>
-          </div>
-
-          {state.status && (
-            <div className="status">
-              {state.status.map((f, i) => (
-                <Field key={i} field={f} />
-              ))}
-            </div>
-          )}
-        </div>
-
         <div className="col">{right.map((s, i) => <Panel key={i} section={s} />)}</div>
       </main>
 
@@ -122,5 +86,5 @@ function App({ state }) {
   );
 }
 
-const state = window.__CHARUI__ || { sections: [], top: [], bottom: [], name: '' };
+const state = window.__CHARUI__ || { sections: [], top: [], bottom: [], status: [], name: '' };
 createRoot(document.getElementById('root')).render(<App state={state} />);
