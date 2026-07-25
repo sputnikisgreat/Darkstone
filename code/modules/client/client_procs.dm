@@ -1049,7 +1049,7 @@ GLOBAL_LIST_EMPTY(external_rsc_urls)
 	screen += O
 	O.appearance = MA
 	O.dir = prefs ? prefs.preview_dir : SOUTH
-	O.screen_loc = "character_preview_map:1:16,2:-24"
+	O.screen_loc = "character_preview_map:1:24,1:38"
 
 /client/proc/clear_character_previews()
 	for(var/atom/movable/screen/S in char_render_holders)
