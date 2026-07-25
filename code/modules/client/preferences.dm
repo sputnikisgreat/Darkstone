@@ -111,6 +111,8 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	var/list/ignoring = list()
 
 	var/clientfps = 100//0 is sync
+	///Which way the character preview is facing in the creator
+	var/preview_dir = SOUTH
 
 	var/parallax
 
@@ -193,6 +195,10 @@ GLOBAL_LIST_EMPTY(chosen_names)
 		current_tab = tabchoice
 	if(tabchoice == 4)
 		current_tab = 0
+
+	if(current_tab == 0)
+		show_charui(user, N)
+		return
 
 //	dat += "<a href='?_src_=prefs;preference=tab;tab=0' [current_tab == 0 ? "class='linkOn'" : ""]>Character Sheet</a>"
 //	dat += "<a href='?_src_=prefs;preference=tab;tab=1' [current_tab == 1 ? "class='linkOn'" : ""]>Game Preferences</a>"
@@ -932,6 +938,88 @@ GLOBAL_LIST_EMPTY(chosen_names)
 
 #undef APPEARANCE_CATEGORY_COLUMN
 #undef MAX_MUTANT_ROWS
+
+
+/datum/preferences/proc/charui_row(label, value, href, swatch)
+	return list("label" = label, "value" = "[value]", "href" = href, "swatch" = swatch)
+
+/datum/preferences/proc/show_charui(mob/user, mob/dead/new_player/N)
+	var/datum/asset/simple/charui/A = get_asset_datum(/datum/asset/simple/charui)
+	A.send(user.client)
+
+	var/datum/faith/selected_faith = GLOB.faithlist[selected_patron?.associated_faith]
+	var/dispGender = "Man"
+	if(gender == FEMALE)
+		dispGender = "Woman"
+
+	var/list/identity = list(
+		charui_row("Name", real_name, "_src_=prefs;preference=name;task=input"),
+		charui_row("Race", pref_species.name, "_src_=prefs;preference=species;task=input"),
+		charui_row("Sex", dispGender, "_src_=prefs;preference=gender"),
+		charui_row("Age", age, "_src_=prefs;preference=age;task=input"),
+		charui_row("Flaw", charflaw, "_src_=prefs;preference=charflaw;task=input"),
+		charui_row("Faith", selected_faith?.name || "None", "_src_=prefs;preference=faith;task=input"),
+		charui_row("Patron", selected_patron?.name || "None", "_src_=prefs;preference=patron;task=input"),
+		charui_row("Dominance", domhand == 1 ? "Left-handed" : "Right-handed", "_src_=prefs;preference=domhand"),
+	)
+
+	var/list/body = list(
+		charui_row("Hairstyle", hairstyle, "_src_=prefs;preference=hairstyle;task=input"),
+		charui_row("Hair Color", "Change", "_src_=prefs;preference=hair;task=input", "#[hair_color]"),
+		charui_row("Facial Hair", facial_hairstyle, "_src_=prefs;preference=facial_hairstyle;task=input"),
+		charui_row("Eye Color", "Change", "_src_=prefs;preference=eyes;task=input", "#[eye_color]"),
+		charui_row("Voice Color", "Change", "_src_=prefs;preference=voice;task=input"),
+		charui_row("Face Detail", detail, "_src_=prefs;preference=detail;task=input"),
+		charui_row("Body Detail", "None", "_src_=prefs;preference=bdetail;task=input"),
+	)
+
+	var/list/top = list(
+		list("label" = "Change Character", "href" = "_src_=prefs;preference=changeslot"),
+		list("label" = "Class", "href" = "_src_=prefs;preference=job;task=menu"),
+		list("label" = "Villain", "href" = "_src_=prefs;preference=antag;task=menu"),
+		list("label" = "Keybinds", "href" = "_src_=prefs;preference=keybinds;task=menu"),
+	)
+
+	var/list/bottom = list()
+	bottom += list(list("label" = "Save", "href" = "_src_=prefs;preference=save"))
+	bottom += list(list("label" = "Undo", "href" = "_src_=prefs;preference=load"))
+	if(SSticker.current_state <= GAME_STATE_PREGAME)
+		switch(N.ready)
+			if(PLAYER_NOT_READY)
+				bottom += list(list("label" = "READY", "style" = "ready", "href" = "src=\ref[N];ready=[PLAYER_READY_TO_PLAY]"))
+			if(PLAYER_READY_TO_PLAY)
+				bottom += list(list("label" = "UNREADY", "style" = "danger", "href" = "src=\ref[N];ready=[PLAYER_NOT_READY]"))
+	else
+		bottom += list(list("label" = "JOIN LATE", "style" = "ready", "href" = "src=\ref[N];late_join=1"))
+
+	var/list/state = list(
+		"name" = real_name,
+		"dir" = preview_dir,
+		"rotate_href" = "_src_=prefs;preference=preview_dir",
+		"top" = top,
+		"bottom" = bottom,
+		"sections" = list(
+			list("title" = "Identity", "side" = "left", "fields" = identity),
+			list("title" = "Body", "side" = "right", "fields" = body),
+		),
+	)
+
+	var/data = {"<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" type="text/css" href="charui.css"/>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>window.__CHARUI__ = [json_encode(state)];</script>
+		<script src="charui.js"></script>
+	</body>
+</html>"}
+
+	winshow(user, "preferencess_window", TRUE)
+	user << browse(data, "window=preferences_browser")
+	update_preview_icon()
 
 /datum/preferences/proc/CaptureKeybinding(mob/user, datum/keybinding/kb, old_key)
 	var/HTML = {"
@@ -2080,6 +2168,13 @@ Slots: [job.spawn_positions]</span>
 						UI_style = "Rogue"
 						if (parent && parent.mob && parent.mob.hud_used)
 							parent.mob.hud_used.update_ui_style(ui_style2icon(UI_style))
+				if("preview_dir")
+					var/newdir = text2num(href_list["newdir"])
+					if(newdir in GLOB.cardinals)
+						preview_dir = newdir
+						update_preview_icon()
+					return
+
 				if("pda_style")
 					var/pickedPDAStyle = input(user, "Choose your PDA style.", "Character Preference", pda_style)  as null|anything in GLOB.pda_styles
 					if(pickedPDAStyle)

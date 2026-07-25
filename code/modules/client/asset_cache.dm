@@ -557,6 +557,13 @@ GLOBAL_LIST_EMPTY(asset_datums)
 		"v4shim.css"          = 'html/font-awesome/css/v4-shims.min.css'
 	)*/
 
+/datum/asset/simple/charui
+	verify = FALSE
+	assets = list(
+		"charui.css" = 'html/charui/charui.css',
+		"charui.js" = 'html/charui/charui.js'
+	)
+
 /datum/asset/simple/blackedstone_class_menu_slop_layout
 	verify = FALSE
 	assets = list(

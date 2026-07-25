@@ -1,0 +1,207 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #08080a;
+  color: #9a9498;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+#root, .app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  flex: none;
+  background: #0d0c0e;
+  border-bottom: 1px solid #2b1416;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.name {
+  font-size: 21px;
+  color: #d6cfd2;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.chip {
+  background: #131114;
+  border: 1px solid #35191c;
+  color: #9c9498;
+  padding: 3px 9px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.chip:hover { background: #2a1114; color: #f0e8ea; border-color: #8e2027; }
+
+.cols {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  gap: 14px;
+  padding: 10px 14px;
+}
+
+.col {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.stage {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+/* Left clear on purpose: the BYOND preview map is positioned over this box. */
+.pedestal {
+  width: 160px;
+  height: 216px;
+  border: 1px solid #241216;
+  background:
+    radial-gradient(ellipse at 50% 94%, rgba(150,30,35,.13), transparent 60%),
+    #0b0a0c;
+}
+
+.rotate {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.arrow {
+  background: #131114;
+  border: 1px solid #35191c;
+  color: #8d7f83;
+  width: 36px;
+  height: 26px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.arrow:hover { background: #2a1114; color: #ff6b6b; border-color: #8e2027; }
+
+.rotlabel {
+  font-size: 11px;
+  color: #6a5f63;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.panel { margin-bottom: 16px; }
+
+.panel h2 {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  font-weight: normal;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #a81d24;
+  border-bottom: 1px solid #2b1416;
+  padding-bottom: 4px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #161418;
+  color: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  padding: 5px 4px;
+  cursor: pointer;
+  transition: background .1s;
+}
+.row:hover { background: #171013; }
+.row.static { cursor: default; }
+.row.static:hover { background: transparent; }
+
+.label {
+  color: #7c7478;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.value {
+  color: #ded6d9;
+  flex: 1 1 auto;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+  word-break: break-word;
+}
+.value.muted { color: #6a6266; }
+
+.swatch {
+  flex: none;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #4a2429;
+}
+
+.bottombar {
+  flex: none;
+  background: #0d0c0e;
+  border-top: 1px solid #2b1416;
+  padding: 9px 14px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn {
+  background: #131114;
+  border: 1px solid #35191c;
+  color: #b3aaae;
+  padding: 6px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.btn:hover { background: #2a1114; color: #f2eaec; border-color: #8e2027; }
+.btn.ready {
+  border-color: #8e2027;
+  color: #e05b5b;
+  background: #1a0e10;
+}
+.btn.ready:hover { background: #3a1216; color: #ff8a8a; border-color: #c0292f; }
+.btn.danger { border-color: #4a3f42; color: #8d8388; }
+.btn.danger:hover { background: #22191c; color: #cfc6ca; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0a0c; }
+::-webkit-scrollbar-thumb { background: #2a1c20; }
+::-webkit-scrollbar-thumb:hover { background: #45242a; }

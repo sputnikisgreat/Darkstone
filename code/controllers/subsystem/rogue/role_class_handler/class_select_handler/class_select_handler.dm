@@ -236,43 +236,43 @@
 					margin: 0;
 					padding: 0;
 					font-family: Georgia, 'Times New Roman', serif;
-					background: #14100f;
-					color: #cbcc97;
+					background: #08080a;
+					color: #9a9498;
 					overflow-y: auto;
 				}
 				.head {
 					position: sticky;
 					top: 0;
-					background: linear-gradient(#1d1715, #171211);
-					border-bottom: 1px solid #3a2f27;
+					background: #0d0c0e;
+					border-bottom: 1px solid #2b1416;
 					padding: 10px 12px 8px 12px;
 				}
 				.title {
 					font-size: 22px;
-					color: #b8341f;
+					color: #a81d24;
 					letter-spacing: 1px;
 					margin-bottom: 8px;
 				}
 				.find {
 					width: 100%;
 					padding: 6px 8px;
-					background: #0e0b0a;
-					border: 1px solid #4a3b30;
+					background: #0b0a0c;
+					border: 1px solid #35191c;
 					border-radius: 3px;
-					color: #cbcc97;
+					color: #9a9498;
 					font-family: inherit;
 					font-size: 15px;
 					outline: none;
 				}
-				.find:focus { border-color: #8a6a4a; }
+				.find:focus { border-color: #8e2027; }
 				.grid { padding: 8px; }
 				.card {
 					display: block;
 					text-decoration: none;
 					color: inherit;
-					background: #1c1613;
-					border: 1px solid #33291f;
-					border-left: 3px solid #6b4d2e;
+					background: #101013;
+					border: 1px solid #221116;
+					border-left: 3px solid #6d1a20;
 					border-radius: 3px;
 					padding: 8px 10px;
 					margin-bottom: 6px;
@@ -280,28 +280,28 @@
 					transition: background 0.12s, border-left-color 0.12s, transform 0.12s;
 				}
 				.card:hover {
-					background: #2a201a;
-					border-left-color: #c8a35a;
+					background: #1c1014;
+					border-left-color: #c0292f;
 					transform: translateX(3px);
 				}
-				.cname { font-size: 19px; color: #e6e0b8; }
-				.plus { color: #7dd44b; margin-left: 5px; }
+				.cname { font-size: 19px; color: #ded6d9; }
+				.plus { color: #e05b5b; margin-left: 5px; }
 				.cdesc {
 					font-size: 12px;
-					color: #8f8672;
+					color: #7c7478;
 					line-height: 1.35;
 					margin-top: 3px;
 				}
 				.foot {
 					position: sticky;
 					bottom: 0;
-					background: #171211;
-					border-top: 1px solid #3a2f27;
+					background: #0d0c0e;
+					border-top: 1px solid #2b1416;
 					padding: 8px 12px;
 					text-align: center;
 				}
 				.foot a {
-					color: #6fbf5f;
+					color: #b3aaae;
 					text-decoration: none;
 					font-size: 15px;
 				}
@@ -309,7 +309,7 @@
 				.empty {
 					display: none;
 					text-align: center;
-					color: #6d6455;
+					color: #6a6266;
 					padding: 18px;
 					font-size: 14px;
 				}
