@@ -198,61 +198,152 @@
 	if(linked_client) // So make sure we don't go further than this without one I guess
 		browser_slop()
 
+/datum/class_select_handler/proc/class_card(datum/advclass/AC, href_bit, plus_str)
+	var/blurb = AC.tutorial
+	if(length(blurb) > 150)
+		blurb = "[copytext(blurb, 1, 150)]..."
+	var/search_key = lowertext("[AC.name] [AC.tutorial]")
+	return {"<a class='card' data-s="[search_key]" href='?src=\ref[src];[href_bit];'>
+		<div class='cname'>[AC.name]<span class='plus'>[plus_str]</span></div>
+		<div class='cdesc'>[blurb]</div>
+	</a>"}
+
 /datum/class_select_handler/proc/browser_slop()
 	if(!linked_client)
 		return
-	//Opening tags and empty head
+
+	var/cards = ""
+	for(var/datum/advclass/AC in rolled_classes)
+		var/plus_str = ""
+		for(var/i in 1 to rolled_classes[AC])
+			plus_str += "+"
+		cards += class_card(AC, "class_selected=1;selected_class=\ref[AC]", plus_str)
+	if(special_session_queue && special_session_queue.len)
+		for(var/datum/advclass/AC in special_session_queue)
+			cards += class_card(AC, "special_selected=1;selected_special=\ref[AC]", "")
+	if(showing_challenge_classes)
+		for(var/datum/advclass/AC in SSrole_class_handler.sorted_class_categories[CTAG_CHALLENGE])
+			cards += class_card(AC, "class_selected=1;selected_class=\ref[AC]", "")
+
 	var/data = {"
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 			<style>
-				@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-				@import url('https://fonts.googleapis.com/css2?family=Jacquarda+Bastarda+9&display=swap');
+				* { box-sizing: border-box; }
+				body {
+					margin: 0;
+					padding: 0;
+					font-family: Georgia, 'Times New Roman', serif;
+					background: #14100f;
+					color: #cbcc97;
+					overflow-y: auto;
+				}
+				.head {
+					position: sticky;
+					top: 0;
+					background: linear-gradient(#1d1715, #171211);
+					border-bottom: 1px solid #3a2f27;
+					padding: 10px 12px 8px 12px;
+				}
+				.title {
+					font-size: 22px;
+					color: #b8341f;
+					letter-spacing: 1px;
+					margin-bottom: 8px;
+				}
+				.find {
+					width: 100%;
+					padding: 6px 8px;
+					background: #0e0b0a;
+					border: 1px solid #4a3b30;
+					border-radius: 3px;
+					color: #cbcc97;
+					font-family: inherit;
+					font-size: 15px;
+					outline: none;
+				}
+				.find:focus { border-color: #8a6a4a; }
+				.grid { padding: 8px; }
+				.card {
+					display: block;
+					text-decoration: none;
+					color: inherit;
+					background: #1c1613;
+					border: 1px solid #33291f;
+					border-left: 3px solid #6b4d2e;
+					border-radius: 3px;
+					padding: 8px 10px;
+					margin-bottom: 6px;
+					cursor: pointer;
+					transition: background 0.12s, border-left-color 0.12s, transform 0.12s;
+				}
+				.card:hover {
+					background: #2a201a;
+					border-left-color: #c8a35a;
+					transform: translateX(3px);
+				}
+				.cname { font-size: 19px; color: #e6e0b8; }
+				.plus { color: #7dd44b; margin-left: 5px; }
+				.cdesc {
+					font-size: 12px;
+					color: #8f8672;
+					line-height: 1.35;
+					margin-top: 3px;
+				}
+				.foot {
+					position: sticky;
+					bottom: 0;
+					background: #171211;
+					border-top: 1px solid #3a2f27;
+					padding: 8px 12px;
+					text-align: center;
+				}
+				.foot a {
+					color: #6fbf5f;
+					text-decoration: none;
+					font-size: 15px;
+				}
+				.foot a:hover { color: #fff; }
+				.empty {
+					display: none;
+					text-align: center;
+					color: #6d6455;
+					padding: 18px;
+					font-size: 14px;
+				}
 			</style>
-			<link rel='stylesheet' type='text/css' href='slop_menustyle2.css'>
 		</head>
-	"}
-
-	//Body tag start
-	data += "<body>"
-
-	//Class href fill-in
-	data += "<div id='top_handwriting'> The fates giveth... </div>"
-	data += "<div id='class_select_box_div'>"
-
-	for(var/datum/advclass/datums in rolled_classes)
-		var/plus_str = ""
-		if(rolled_classes[datums] > 0)
-			var/plus_factor = rolled_classes[datums]
-
-			for(var/i in 1 to plus_factor)
-				plus_str += "+"
-		data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='haha_skull.gif' width=32 height=32>[datums.name]<span id='green_plussa'>[plus_str]</span><img class='ninetysskull' src='haha_skull.gif' width=32 height=32></a></div>"
-	if(special_session_queue && special_session_queue.len)
-		for(var/datum/advclass/datums in special_session_queue)
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];special_selected=1;selected_special=\ref[datums];'><img class='ninetysskull' src='haha_skull.gif' width=32 height=32>[datums.name]<img class='ninetysskull' src='haha_skull.gif' width=32 height=32></a></div>"
-	if(showing_challenge_classes)
-		for(var/datum/advclass/datums in SSrole_class_handler.sorted_class_categories[CTAG_CHALLENGE])
-			data += "<div class='class_bar_div'><a class='vagrant' href='?src=\ref[src];class_selected=1;selected_class=\ref[datums];'><img class='ninetysskull' src='haha_skull.gif' width=32 height=32>[datums.name]<img class='ninetysskull' src='haha_skull.gif' width=32 height=32></a></div>"
-	data += "</div>"
-
-	//Buttondiv Segment
-	data += "<div class='footer'>"
-	data += {"	
-		<a class='mo_bottom_buttons' href='?src=\ref[src];show_challenge_class=1'>[showing_challenge_classes ? "Hide Challenge Classes" : "Show Challenge Classes"]</a>
-	</div>
-	"}
-
-	//Closing Tags
-	data += {"
+		<body>
+			<div class='head'>
+				<div class='title'>The fates giveth...</div>
+				<input class='find' id='q' type='text' placeholder='Search classes' autofocus oninput='flt()'/>
+			</div>
+			<div class='grid' id='grid'>[cards]</div>
+			<div class='empty' id='none'>No class by that name.</div>
+			<div class='foot'>
+				<a href='?src=\ref[src];show_challenge_class=1'>[showing_challenge_classes ? "Hide" : "Show"] Challenge Classes</a>
+			</div>
+			<script>
+				function flt() {
+					var q = document.getElementById('q').value.toLowerCase();
+					var cards = document.getElementsByClassName('card');
+					var shown = 0;
+					for (var i = 0; i < cards.length; i++) {
+						var c = cards.item(i);
+						var hit = c.getAttribute('data-s').indexOf(q) >= 0;
+						c.style.display = hit ? '' : 'none';
+						if (hit) shown++;
+					}
+					document.getElementById('none').style.display = shown ? 'none' : 'block';
+				}
+			</script>
 		</body>
 	</html>
 	"}
 
-	linked_client << browse(data, "window=class_handler_main;size=420x640;can_close=0;can_minimize=0;can_maximize=1;can_resize=1;titlebar=1")
+	linked_client << browse(data, "window=class_handler_main;size=460x680;can_close=0;can_minimize=0;can_maximize=1;can_resize=1;titlebar=1")
 
 /datum/class_select_handler/proc/class_select_slop()
 
